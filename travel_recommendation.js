@@ -194,3 +194,15 @@ if (searchInput) {
     }
   });
 }
+
+// Check for query parameter search on page load
+window.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const searchParam = urlParams.get("search");
+  if (searchParam && searchInput) {
+    searchInput.value = searchParam;
+    setTimeout(() => {
+      executeSearch();
+    }, 200);
+  }
+});
