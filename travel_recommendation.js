@@ -105,16 +105,27 @@ function executeSearch() {
         results = data.temples || [];
         categoryTitle = "Temple Recommendations";
       }
-      // Check keywords: country / countries
+            // Check keywords: country / countries
       else if (query === "country" || query === "countries") {
         if (data.countries) {
-          data.countries.forEach((country) => {
-            if (country.cities) {
-              results = results.concat(country.cities);
-            }
-          });
+          // Prioritize showing multiple different countries (e.g. Australia and Japan) immediately at the top
+          const maxCities = Math.max(...data.countries.map(c => (c.cities ? c.cities.length : 0)));
+          for (let i = 0; i < maxCities; i++) {
+            data.countries.forEach(country => {
+              if (country.cities && country.cities[i]) {
+                const city = country.cities[i];
+                results.push({
+                  name: `Country: ${country.name} (${city.name})`,
+                  country: country.name,
+                  city: city.name,
+                  imageUrl: city.imageUrl,
+                  description: `Country: ${country.name} | City: ${city.name}. ${city.description}`
+                });
+              }
+            });
+          }
         }
-        categoryTitle = "Country Recommendations";
+        categoryTitle = "Countries (Australia, Japan, Brazil)";
       }
       // Check specific country names (australia, japan, brazil)
       else {
